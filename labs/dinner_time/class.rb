@@ -16,6 +16,7 @@ class Protein < Food
 	attr_accessor :animal_type
 	def initialize(a)
 		@animal_type = a
+		@animals = []
 	end
 	def to_s
 		animal_type

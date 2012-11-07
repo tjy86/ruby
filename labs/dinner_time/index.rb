@@ -2,59 +2,84 @@ require "pry"
 
 load 'class.rb'
 action = nil
-dinners = []
+action3 = nil
+available_menu = {}
+plate = []
+menu = {}
+menu[:mon] = nil
+menu[:tues] = nil
+menu[:wed] = nil
+menu[:thurs] = nil
+menu[:fri] = nil
 
-puts '(c)arb or (p)rotein or (q)uit?'
-action = gets.chomp
+def make_plate(action)
+	while action != 'q'
+		case action
+		when 'c'
+			puts "grain type?"
+			a = gets.chomp
+			puts "calories?"
+			b = gets.chomp.to_f
+			puts "servings?"
+			c = gets.chomp.to_f
+			puts "prep time in minutes?"
+			d = gets.chomp.to_f
 
-while action != 'q'
-	case action
-	when 'c'
-		puts "grain type??"
-		a = gets.chomp
-		puts "calories?"
-		b = gets.chomp.to_f
-		puts "servings?"
-		c = gets.chomp.to_f
-		puts "prep time in minutes?"
-		d = gets.chomp.to_f
+			dinner = Carb.new(a)
+			dinner.calories = b
+			dinner.servings = c
+			dinner.prep_time = d
+		when 'p'
+			puts "animal type?"
+			a = gets.chomp
+			puts "calories?"
+			b = gets.chomp.to_f
+			puts "servings?"
+			c = gets.chomp.to_f
+			puts "prep time in minutes?"
+			d = gets.chomp.to_f
 
-		dinner = Carb.new(a)
-		dinner.calories = b
-		dinner.servings = c
-		dinner.prep_time = d
-		dinners << dinner
-	when 'p'
-		puts "animal type??"
-		a = gets.chomp
-		puts "calories?"
-		b = gets.chomp.to_f
-		puts "servings?"
-		c = gets.chomp.to_f
-		puts "prep time in minutes?"
-		d = gets.chomp.to_f
-
-		dinner = Protein.new(a)
-		dinner.calories = b
-		dinner.servings = c
-		dinner.prep_time = d
-		dinners << dinner
+			dinner = Protein.new(a)
+			dinner.calories = b
+			dinner.servings = c
+			dinner.prep_time = d
+		end
+		action = 'q'
 	end
-		dinner = nil
+	time = 0
+	return dinner
+end
+
+while action3 != 'n'
+	puts '(c)arb or (p)rotein or (q)uit?'
+	action = gets.chomp
+	while action != 'q'
+		plate << make_plate(action)
 		puts '(c)arb or (p)rotein or (q)uit?'
 		action = gets.chomp
-end
-time = 0
+	end
+	puts "what's on your plate: #{plate.join(', ')}"
+	puts "(c)hoose existing menu or (n)ew menu?"
+	action2 = gets.chomp
+	case action2
+		when 'c'
+			puts "choose from one: #{available_menu.keys.join(', ')}"
+			choice = gets.chomp
+			puts "which day is it? #{menu.keys.join(', ')}"
+			day = gets.chomp.to_sym	
+			menu[day] = plate
+			available_menu[choice] = menu[day]
+			binding.pry
+		when 'n'
+			puts "name your menu"
+			choice = gets.chomp
+			puts "which day is it? #{menu.keys.join(', ')}"
+			day = gets.chomp.to_sym
+			menu[day] = plate
+			available_menu[choice] = menu[day]
+			plate=[]
+	end
 
-puts "what's for dinner: #{dinners.join(', ')}"
-
-dinners.each do |x|
-	time = x.prep_time + time
+	puts "do you want to create another plate? (y/n)"
+	action3 = gets.chomp
 end
-puts "time to serve dinner #{time} minutes"
-
-cals = 0
-dinners.each do |y|
-	cals = (y.calories * y.servings) + cals
-end
-puts "total calories in dinner #{cals}"
